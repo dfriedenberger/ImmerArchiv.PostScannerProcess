@@ -11,10 +11,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{6C4AA96C-28FA-4B30-B03D-0B4351859EA7}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		SolutionItems\GlobalAssemblyInfo.cs = SolutionItems\GlobalAssemblyInfo.cs
 		SolutionItems\ImmerArchiv.ico = SolutionItems\ImmerArchiv.ico
 		SolutionItems\ImmerArchiv.PostScanner.Process.snk = SolutionItems\ImmerArchiv.PostScanner.Process.snk
+		LICENSE = LICENSE
 		SolutionItems\ProductInfo.xml = SolutionItems\ProductInfo.xml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{86FA8FC6-C524-4C14-84D3-70609C5E2F62}"

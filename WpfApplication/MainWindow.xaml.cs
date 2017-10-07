@@ -117,10 +117,20 @@ namespace ImmerArchiv.PostScannerProcess.WpfApplication
 
             var scannerService = Locator.GetScannerService();
 
+            var cache = _uiScanItemList.Select(x => new { AbsolutePath = x.AbsolutePath, Active = x.Active }).ToList();
+
             _uiScanItemList.Clear();
+
+
             foreach(var item in scannerService.ScanFolder())
             {
-                _uiScanItemList.Add(ToUIScanItem(item));
+                if (item.Type == ScanItemType.System) continue;
+                var active = item.Type == ScanItemType.Unknown ? false : true;
+
+                var c = cache.SingleOrDefault(x => x.AbsolutePath == item.Path);
+                if (c != null) active = c.Active;
+
+                _uiScanItemList.Add(ToUIScanItem(item, active));
             }
 
          
@@ -128,7 +138,7 @@ namespace ImmerArchiv.PostScannerProcess.WpfApplication
             btnArchive.IsEnabled = ix >= 0 && (_uiScanItemList.Count > 0);
         }
 
-        private UIScanItem ToUIScanItem(ScanItem item)
+        private UIScanItem ToUIScanItem(ScanItem item,bool active)
         {
             return new UIScanItem()
             {
@@ -136,7 +146,7 @@ namespace ImmerArchiv.PostScannerProcess.WpfApplication
                 Icon = item.Type == ScanItemType.Pdf ? UICanvasIcon.FileExtPdf :
                        item.Type == ScanItemType.Image ? UICanvasIcon.FileExtImage :
                        UICanvasIcon.FileExtUnknown,
-                Active = item.Type == ScanItemType.Unknown ? false : true,
+                Active = active,
                 AbsolutePath = item.Path
             };
         }
@@ -246,6 +256,10 @@ namespace ImmerArchiv.PostScannerProcess.WpfApplication
             var scannerService = Locator.GetScannerService();
 
             scannerService.ArchivFiles(files, archive.AbsolutePath);
+
+
+            //disable Selected Archiv
+            cmbArchives.SelectedIndex = -1;
 
 
 

@@ -153,11 +153,15 @@ namespace ImmerArchiv.PostScannerProcess.Impl.Service
 
         private ScanItemType ResolveType(string file)
         {
+            string name = Path.GetFileName(file).ToLower();
+            switch(name)
+            {
+                case "thumbs.db":
+                    return ScanItemType.System;
+            }
 
             string ext = Path.GetExtension(file).ToLower();
-
-
-            switch(ext)
+            switch (ext)
             {
                 case ".pdf":
                     return ScanItemType.Pdf;
