@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include $(sys.CURRENTDIR)\ProductInfo.wxi?>
+  <?include $(sys.CURRENTDIR)\Pathes.wxi?>
+
+  <Product Id="*" Name="$(var.ProductName) V$(var.MajorVersion).$(var.MinorVersion).$(var.PatchVersion)" Language="1033"
+           Version="$(var.Version)" Manufacturer="$(var.Manufacturer)" UpgradeCode="{D33A1EA1-D291-40B2-BBBD-9FE0605F627C}">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <Media Id="1" Cabinet="PostScannerProcess.cab" EmbedCab="yes" />
+
+    <Icon Id='ProductIcon' SourceFile='$(var.WpfApplication.BinPath)\ImmerArchiv.ico' />
+    <Property Id='ARPPRODUCTICON' Value='ProductIcon' />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="DesktopFolder" Name="Desktop" />
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLLOCATION" Name="ImmerArchiv.PostScannerProcess">
+
+          <Component Id="PostScannerProcess" Guid="{07072C08-53F3-4389-A654-F923780A39CF}">
+            <File Source="$(var.WpfApplication.BinPath)\ImmerArchiv.PostScannerProcess.Impl.dll" />
+            <File Source="$(var.WpfApplication.BinPath)\ImmerArchiv.PostScannerProcess.Impl.pdb" />
+            <File Source="$(var.WpfApplication.BinPath)\ImmerArchiv.PostScannerProcess.Shared.dll" />
+            <File Source="$(var.WpfApplication.BinPath)\ImmerArchiv.PostScannerProcess.Shared.pdb" />
+           
+            <File Source="$(var.WpfApplication.BinPath)\Castle.Core.dll" />
+            <File Source="$(var.WpfApplication.BinPath)\Castle.Windsor.dll" />
+            <File Source="$(var.WpfApplication.BinPath)\MaterialDesignColors.dll" />
+            <File Source="$(var.WpfApplication.BinPath)\MaterialDesignThemes.Wpf.dll" />
+            <File Source="$(var.WpfApplication.BinPath)\Newtonsoft.Json.dll" />
+            <File Source="$(var.WpfApplication.BinPath)\log4net.dll" />
+            <File Source="$(var.WpfApplication.BinPath)\ImmerArchiv.PostScannerProcess.WpfApplication.exe"  KeyPath="yes">
+              <Shortcut Id="DesktopShortcutImportDialog"
+                  Directory="DesktopFolder"
+                  Name="PostScan"
+                  Description="PostScanner of ImmerArchiv Softwaresuite"
+                  WorkingDirectory="INSTALLLOCATION"
+                  Icon="ImmerArchiv.PostScannerProcess.WpfApplication.exe"
+                  IconIndex="0"
+                  Advertise="yes" >
+                <Icon Id="ImmerArchiv.PostScannerProcess.WpfApplication.exe" SourceFile="$(var.WpfApplication.BinPath)\ImmerArchiv.PostScannerProcess.WpfApplication.exe" />
+              </Shortcut>
+            </File>
+
+            <File Source="$(var.WpfApplication.BinPath)\ImmerArchiv.PostScannerProcess.WpfApplication.pdb" />
+            <File Source="$(var.WpfApplication.BinPath)\ImmerArchiv.PostScannerProcess.WpfApplication.exe.config" />
+            <File Source="$(var.WpfApplication.BinPath)\ImmerArchiv.ico" />
+            <File Source="$(var.WpfApplication.BinPath)\ProductInfo.xml" />
+          </Component>
+
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id="ProductFeature" Title="SetupImportTool" Level="1">
+      <ComponentRef Id="PostScannerProcess" />
+    </Feature>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" ></Property>
+    <UIRef Id="WixUI_InstallDir"/>
+
+    <WixVariable Id="WixUILicenseRtf" Value="licence.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="InstallerBackground.bmp"/>
+
+    <Upgrade Id="{D33A1EA1-D291-40B2-BBBD-9FE0605F627C}">
+      <UpgradeVersion Minimum="$(var.Version)" IncludeMinimum="no" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
+      <UpgradeVersion Minimum="0.0.0" Maximum="$(var.Version)" IncludeMinimum="yes" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" />
+    </Upgrade>
+
+    <InstallExecuteSequence>
+      <RemoveExistingProducts After="InstallInitialize" />
+      <Custom Action="NewerVersion" After="FindRelatedProducts">NEWERVERSIONDETECTED</Custom>
+    </InstallExecuteSequence>
+
+    <CustomAction Id="NewerVersion" Error="A later version of [ProductName] is already installed." />
+
+  </Product>
+
+</Wix>
